@@ -19,17 +19,27 @@ assign isBranch = Branch & Equal;
 assign Flush = Jump | isBranch;
 assign Jump_32 = {mux1_o[31:28], Jump_28};
 
+wire WriteIFID;
+
+wire        mux8_RegDst;
+wire        mux8_ALUSrc;
+wire [1:0]  mux8_ALUOp;
+wire        mux8_MemRead;
+wire        mux8_MemToReg;
+wire        mux8_RegWrite;
+wire        mux8_select;
+
 Control Control(
     .Op_i       (inst[31:26]),
-    .RegDst_o   (mux8.RegDst_i),
-    .ALUSrc_o   (mux8.ALUSrc_i),
-    .MemtoReg_o (mux8.MemtoReg_i),
-    .RegWrite_o (mux8.RegWrite_i),
-    .MemRead_o	(mux8.MemRead_i),
-    .MemWrite_o	(mux8.MemWrite_i),
+    .RegDst_o   (mux8_RegDst),
+    .ALUSrc_o   (mux8_ALUSrc),
+    .MemtoReg_o (mux8_MemtoReg),
+    .RegWrite_o (mux8_RegWrite),
+    .MemRead_o	(mux8_MemRead),
+    .MemWrite_o	(mux8_MemWrite),
     .Branch_o	(Branch),
     .Jump_o		(Jump),
-    .ALUOp_o	(mux8.ALUOp_i)
+    .ALUOp_o	(mux8_ALUOp)
 );
 
 
@@ -91,8 +101,8 @@ Hazard_Detection Hazard_Detection(
 	.IFID_RegRT_i	(inst[20:16]),
 
 	.WritePC_o		(PC.PCWrite_i),
-	.WriteIFID_o	(IF_ID.WriteIFID_i),
-	.mux8_o			(mux8.select_i)
+	.WriteIFID_o	(WriteIFID),
+	.mux8_o			(mux8_select)
 );
 
 Forwarding	Forwarding(
@@ -126,7 +136,7 @@ ALU_Control ALU_Control(
 
 IF_ID IF_ID(
 	.clk_i      (clk_i),
-	.WriteIFID_i(Hazard_Detection.WriteIFID_o),
+	.WriteIFID_i (WriteIFID),
 	.Flush_i	(Flush),
 	.pc4addr_i	(pc4addr),
 	.instr_i	(Instruction_Memory.instr_o),
@@ -273,14 +283,14 @@ MUX_Forward mux7(
 );
 
 MUX_Hazard mux8(
-	.RegDst_i   (Control.RegDst_o),
-    .ALUSrc_i   (Control.ALUSrc_o),
-    .ALUOp_i	(Control.ALUOp_o),
-    .MemRead_i	(Control.MemRead_o),
-    .MemWrite_i	(Control.MemWrite_o),
-    .MemtoReg_i (Control.MemtoReg_o),
-    .RegWrite_i (Control.RegWrite_o),
-    .select_i	(Hazard_Detection.mux8_o),
+	.RegDst_i   (mux8_RegDst),
+    .ALUSrc_i   (mux8_ALUSrc),
+    .ALUOp_i	(mux8_ALUOp),
+    .MemRead_i	(mux8_MemRead),
+    .MemWrite_i	(mux8_MemWrite),
+    .MemtoReg_i (mux8_MemtoReg),
+    .RegWrite_i (mux8_RegWrite),
+    .select_i	(mux8_select),
 
     .RegDst_o   (ID_EX.RegDst_i),
     .ALUSrc_o   (ID_EX.ALUSrc_i),
@@ -291,13 +301,18 @@ MUX_Hazard mux8(
     .RegWrite_o (ID_EX.RegWrite_i)
 );
 
-always @(*) begin
+always @(posedge clk_i) begin
+  //$display("Instr_i: %b", IF_ID.instr_i);
+  //$display("rdaddr_o: %b", EX_MEM.RDaddr_i);
   //$display("HD: %d", Hazard_Detection.WritePC_o);
   //$display("PCWrite: %d", PC.PCWrite_i);
   //$display("rs: %b", Registers.RSdata_o);
   //$display("rt: %b", Registers.RTdata_o);
   //$display("rd: %b", Registers.RDdata_i);
   //$display("rd_addr: %b", Registers.RDaddr_i);
+  //$display("Writeifid_o: %b", Hazard_Detection.WriteIFID_o);
+  //$display("Writeifid_i: %b", IF_ID.WriteIFID_i);
+  //$display("WriteIFID: %b", WriteIFID);
 end
 
 endmodule

@@ -60,9 +60,9 @@ always@(posedge clk_i) begin
 	RSdata_o <= RSdata_i;
 	RTdata_o <= RTdata_i;
 	immediate_o <= immediate_i;
-  //$display("rs_addr_o: %b", RSaddr_o);
-  //$display("rt_addr_o: %b", RTaddr_o);
-  //$display("rd_addr_o: %b", RDaddr_o);
+  $display("rs_addr_o: %b", RSaddr_o);
+  $display("rt_addr_o: %b", RTaddr_o);
+  $display("rd_addr_o: %b", RDaddr_o);
 end
 
 endmodule
