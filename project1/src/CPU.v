@@ -52,7 +52,7 @@ wire [31:0] ALUresult;
 
 wire        EX_MemRead, EX_MemWrite, EX_MemtoReg, EX_RegWrite;
 wire        MEM_MemtoReg;
-
+wire [31:0]	MEM_Memdata;
 Control Control(
   .Op_i       (inst[31:26]),
   .RegDst_o   (mux8_RegDst),
@@ -105,11 +105,12 @@ Registers Registers(
 );
 
 Data_Memory Data_Memory(
+  .clk_i      (clk_i),
   .addr_i     (EXMEM_ALUresult),
   .data_i		(EX_MEM.RDdata_o),
   .MemRead_i	(EX_MEM.MemRead_o),
   .MemWrite_i	(EX_MEM.MemWrite_o),
-  .data_o    	(MEM_WB.Memdata_i)
+  .data_o    	(MEM_Memdata)
 );
 
 
@@ -227,7 +228,7 @@ MEM_WB MEM_WB(
   .MemtoReg_i (MEM_MemtoReg),
   .RegWrite_i (EXMEM_RegWrite),
 
-  .Memdata_i	(Data_Memory.data_o),
+  .Memdata_i	(MEM_Memdata),
   .ALUresult_i(EXMEM_ALUresult),
   .RDaddr_i	(EXMEM_RDaddr),
 
