@@ -29,6 +29,15 @@ wire        mux8_MemToReg;
 wire        mux8_RegWrite;
 wire        mux8_select;
 
+wire [4:0]  mux3_data2;
+wire        mux3_select;
+
+wire [1:0]  mux6_select;
+wire [31:0] mux6_dataDft;
+
+wire [1:0]  mux7_select;
+wire [31:0] mux7_dataDft;
+
 Control Control(
     .Op_i       (inst[31:26]),
     .RegDst_o   (mux8_RegDst),
@@ -113,8 +122,8 @@ Forwarding	Forwarding(
 	.IDEX_RegRS_i		(ID_EX.RSaddr_o),
 	.IDEX_RegRT_i		(IDEX_RTaddr),
 
-	.ForwardA_o			(mux6.select_i),
-	.ForwardB_o			(mux7.select_i)
+	.ForwardA_o			(mux6_select),
+	.ForwardB_o			(mux7_select)
 );
 
 ALU ALU(
@@ -161,7 +170,7 @@ ID_EX ID_EX(
     .RTaddr_i	(inst[20:16]),
     .RDaddr_i	(inst[15:11]),
 
-    .RegDst_o   (mux3.select_i),
+    .RegDst_o   (mux3_select),
     .ALUSrc_o   (mux4.select_i),
     .ALUOp_o	(ALU_Control.ALUOp_i),
     .MemRead_o	(IDEX_MemRead),
@@ -169,12 +178,12 @@ ID_EX ID_EX(
     .MemtoReg_o (EX_MEM.MemtoReg_i),
     .RegWrite_o (EX_MEM.RegWrite_i),
 
-    .RSdata_o	(mux6.dataDft_i),
-    .RTdata_o	(mux7.dataDft_i),
+    .RSdata_o	(mux6_dataDft),
+    .RTdata_o	(mux7_dataDft),
     .immediate_o(IDEX_immediate),
     .RSaddr_o	(Forwarding.IDEX_RegRS_i),
     .RTaddr_o	(IDEX_RTaddr),
-    .RDaddr_o	(mux3.data2_i)
+    .RDaddr_o	(mux3_data2)
 );
 
 EX_MEM EX_MEM(
@@ -233,8 +242,8 @@ Shift_Beq Shift_Beq(
 
 MUX5 mux3(
     .data1_i    (IDEX_RTaddr),
-    .data2_i    (ID_EX.RDaddr_o),
-    .select_i   (ID_EX.RegDst_o),
+    .data2_i    (mux3_data2),
+    .select_i   (mux3_select),
     .data_o     (EX_MEM.RDaddr_i)
 );
 
@@ -269,16 +278,16 @@ MUX32 mux5(
 MUX_Forward mux6(
 	.dataEX_i	(EXMEM_ALUresult),
 	.dataMEM_i	(mux5_o),
-	.dataDft_i	(ID_EX.RSdata_o),
-	.select_i	(Forwarding.ForwardA_o),
+	.dataDft_i	(mux6_dataDft),
+	.select_i	(mux6_select),
 	.data_o		(ALU.data1_i)
 );
 
 MUX_Forward mux7(
 	.dataEX_i	(EXMEM_ALUresult),
 	.dataMEM_i	(mux5_o),
-	.dataDft_i	(ID_EX.RTdata_o),
-	.select_i	(Forwarding.ForwardB_o),
+	.dataDft_i	(mux7_dataDft),
+	.select_i	(mux7_select),
 	.data_o		(mux7_o)
 );
 
@@ -302,14 +311,20 @@ MUX_Hazard mux8(
 );
 
 always @(posedge clk_i) begin
+  //$display("Ctrl_o: %b", Control.ALUSrc_o);
+  //$display("mux8_i: %b", mux8.ALUSrc_i);
+  //$display("idexo: %b", ID_EX.RDaddr_o);
+  //$display("mux3_i2: %b", mux3.data2_i);
+  //$display("mux3_i1: %b", mux3.data1_i);
+  //$display("mux3_sel: %b", mux3.select_i);
   //$display("Instr_i: %b", IF_ID.instr_i);
-  //$display("rdaddr_o: %b", EX_MEM.RDaddr_i);
+  //$display("rdaddr_o: %b", MEM_WB.RDaddr_o);
   //$display("HD: %d", Hazard_Detection.WritePC_o);
   //$display("PCWrite: %d", PC.PCWrite_i);
   //$display("rs: %b", Registers.RSdata_o);
   //$display("rt: %b", Registers.RTdata_o);
   //$display("rd: %b", Registers.RDdata_i);
-  //$display("rd_addr: %b", Registers.RDaddr_i);
+  $display("rd_addr: %b", Registers.RDaddr_i);
   //$display("Writeifid_o: %b", Hazard_Detection.WriteIFID_o);
   //$display("Writeifid_i: %b", IF_ID.WriteIFID_i);
   //$display("WriteIFID: %b", WriteIFID);

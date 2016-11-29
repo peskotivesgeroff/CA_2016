@@ -3,3 +3,4 @@ hw*
 *.zip
 output.txt
 run
+*.bak

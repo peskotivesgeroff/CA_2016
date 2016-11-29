@@ -26,7 +26,7 @@ output				RegDst_o, ALUSrc_o, MemRead_o, MemWrite_o, MemtoReg_o, RegWrite_o;
 reg		[1:0]		ALUOp_o;
 reg					RegDst_o, ALUSrc_o, MemRead_o, MemWrite_o, MemtoReg_o, RegWrite_o;
 
-always@(select_i) begin
+always@(*) begin
     if(select_i) begin
 		RegDst_o = 1'b0;
 		ALUSrc_o = 1'b0;
