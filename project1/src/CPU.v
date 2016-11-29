@@ -47,11 +47,11 @@ Adder Add_BeqAddr(
 
 
 PC PC(
-    .clk_i      (clk_i),
-    .start_i    (start_i),
+    .clk_i        (clk_i),
+    .start_i      (start_i),
     .PCWrite_i	(Hazard_Detection.WritePC_o),
-    .pc_i       (mux2.data_o),
-    .pc_o       (inst_addr)
+    .pc_i         (mux2.data_o),
+    .pc_o         (inst_addr)
 );
 
 Instruction_Memory Instruction_Memory(
@@ -290,6 +290,15 @@ MUX_Hazard mux8(
     .MemtoReg_o (ID_EX.MemtoReg_i),
     .RegWrite_o (ID_EX.RegWrite_i)
 );
+
+always @(*) begin
+  //$display("HD: %d", Hazard_Detection.WritePC_o);
+  //$display("PCWrite: %d", PC.PCWrite_i);
+  //$display("rs: %b", Registers.RSdata_o);
+  //$display("rt: %b", Registers.RTdata_o);
+  //$display("rd: %b", Registers.RDdata_i);
+  //$display("rd_addr: %b", Registers.RDaddr_i);
+end
 
 endmodule
 

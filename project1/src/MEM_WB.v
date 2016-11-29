@@ -34,6 +34,7 @@ always@(posedge clk_i) begin
     RDaddr_o <= RDaddr_i;
     Memdata_o <= Memdata_i;
     ALUresult_o <= ALUresult_i;
+    //$display("RDaddr: %b", RDaddr_o);
 end
 
 endmodule

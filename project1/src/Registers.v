@@ -6,8 +6,7 @@ module Registers
     RDaddr_i, 
     RDdata_i,
     RegWrite_i, 
-    RSdata_o, 
-    RTdata_o 
+    RSdata_o, RTdata_o 
 );
 
 // Ports
@@ -29,6 +28,8 @@ assign  RTdata_o = register[RTaddr_i];
 
 // Write Data   
 always@(posedge clk_i) begin
+  $display("rd: %b", RDdata_i);
+  $display("rd_addr: %b", RDaddr_i);
     if(RegWrite_i)
         register[RDaddr_i] <= RDdata_i;
 end

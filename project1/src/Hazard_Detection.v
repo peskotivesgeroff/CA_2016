@@ -15,6 +15,7 @@ input   [4:0]		IDEX_RegRT_i, IFID_RegRS_i, IFID_RegRT_i;
 output              WritePC_o, WriteIFID_o, mux8_o;
 
 reg					WritePC_o, WriteIFID_o, mux8_o;
+initial WritePC_o = 1'b1;
 
 always@(IDEX_MemRead_i or IDEX_RegRT_i or IFID_RegRS_i or IFID_RegRT_i) begin
     if(IDEX_MemRead_i && ((IDEX_RegRT_i == IFID_RegRS_i) || (IDEX_RegRT_i ==IFID_RegRT_i))) begin //stall

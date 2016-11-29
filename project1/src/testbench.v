@@ -20,6 +20,8 @@ initial begin
     flush = 0;
 
 	CPU.PC.pc_o = 32'b0;
+  //CPU.PC.PC_NoWrite_i = 1'b0;
+  //CPU.PC.Hazard_Detection.WritePC_o = 1'b1;
     // initialize instruction memory
     for(i=0; i<256; i=i+1) begin
         CPU.Instruction_Memory.memory[i] = 32'b0;
@@ -56,8 +58,9 @@ initial begin
 end
 
 always@(posedge Clk) begin
-    if(counter == 30)    // stop after 30 cycles
-        $stop;
+    if(counter == 10)    // stop after 30 cycles
+        $finish;
+        //$stop;
 
     // put in your own signal to count stall and flush
 	if(CPU.Hazard_Detection.mux8_o == 1 && CPU.Control.Jump_o == 0 && CPU.Control.Branch_o == 0)stall = stall + 1;

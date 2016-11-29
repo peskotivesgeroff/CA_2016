@@ -17,7 +17,10 @@ reg     [31:0]      pc_o;
 
 
 always@(posedge clk_i) begin
-    if(start_i && PCWrite_i)
+  //$display("start: %d", start_i);
+  //$display("PC write: %d", PCWrite_i);
+  //$display("PC i: %d", pc_i);
+  if(start_i && PCWrite_i)
 		pc_o <= pc_i;
 	else
 		pc_o <= pc_o;
