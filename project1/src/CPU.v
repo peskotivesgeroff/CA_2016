@@ -32,6 +32,12 @@ wire        mux8_select;
 wire [4:0]  mux3_data2;
 wire        mux3_select;
 
+wire        mux4_select;
+
+wire        mux5_select;
+wire [31:0] mux5_data1;
+wire [31:0] mux5_data2;
+
 wire [1:0]  mux6_select;
 wire [31:0] mux6_dataDft;
 
@@ -171,7 +177,7 @@ ID_EX ID_EX(
     .RDaddr_i	(inst[15:11]),
 
     .RegDst_o   (mux3_select),
-    .ALUSrc_o   (mux4.select_i),
+    .ALUSrc_o   (mux4_select),
     .ALUOp_o	(ALU_Control.ALUOp_i),
     .MemRead_o	(IDEX_MemRead),
     .MemWrite_o	(EX_MEM.MemWrite_i),
@@ -216,11 +222,11 @@ MEM_WB MEM_WB(
     .ALUresult_i(EXMEM_ALUresult),
     .RDaddr_i	(EXMEM_RDaddr),
 
-    .MemtoReg_o (mux5.select_i),
+    .MemtoReg_o (mux5_select),
     .RegWrite_o (MEMWB_RegWrite),
 
-    .Memdata_o	(mux5.data2_i),
-    .ALUresult_o(mux5.data1_i),
+    .Memdata_o	(mux5_data2),
+    .ALUresult_o(mux5_data1),
     .RDaddr_o	(MEMWB_RDaddr)
 );
 
@@ -245,8 +251,7 @@ MUX5 mux3(
     .data2_i    (mux3_data2),
     .select_i   (mux3_select),
     .data_o     (EX_MEM.RDaddr_i)
-);
-
+); 
 MUX32 mux1(
     .data1_i    (pc4addr),
     .data2_i    (Add_BeqAddr.data_o),
@@ -264,14 +269,14 @@ MUX32 mux2(
 MUX32 mux4(
     .data1_i    (mux7_o),
     .data2_i    (IDEX_immediate),
-    .select_i   (ID_EX.ALUSrc_o),
+    .select_i   (mux4_select),
     .data_o     (ALU.data2_i)
 );
 
 MUX32 mux5(
-    .data1_i    (MEM_WB.ALUresult_o),
-    .data2_i    (MEM_WB.Memdata_o),
-    .select_i   (MEM_WB.MemtoReg_o),
+    .data1_i    (mux5_data1),
+    .data2_i    (mux5_data2),
+    .select_i   (mux5_select),
     .data_o     (mux5_o)
 );
 
@@ -311,9 +316,14 @@ MUX_Hazard mux8(
 );
 
 always @(posedge clk_i) begin
+  $display("ALU_data2: %b", ALU.data2_i);
+  $display("mux4_data1: %b", mux4.data1_i);
+  $display("mux4_data2: %b", mux4.data2_i);
+  $display("mux4_select: %b", mux4.select_i);
   //$display("Ctrl_o: %b", Control.ALUSrc_o);
   //$display("mux8_i: %b", mux8.ALUSrc_i);
   //$display("idexo: %b", ID_EX.RDaddr_o);
+  //$display("exmemo: %b", EX_MEM.RDaddr_o);
   //$display("mux3_i2: %b", mux3.data2_i);
   //$display("mux3_i1: %b", mux3.data1_i);
   //$display("mux3_sel: %b", mux3.select_i);
@@ -324,7 +334,7 @@ always @(posedge clk_i) begin
   //$display("rs: %b", Registers.RSdata_o);
   //$display("rt: %b", Registers.RTdata_o);
   //$display("rd: %b", Registers.RDdata_i);
-  $display("rd_addr: %b", Registers.RDaddr_i);
+  //$display("rd_addr: %b", Registers.RDaddr_i);
   //$display("Writeifid_o: %b", Hazard_Detection.WriteIFID_o);
   //$display("Writeifid_i: %b", IF_ID.WriteIFID_i);
   //$display("WriteIFID: %b", WriteIFID);
