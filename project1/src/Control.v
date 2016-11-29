@@ -46,7 +46,7 @@ always@(Op_i) begin
 			Jump_o		= 1'b0;
 			ALUOp_o		= 2'b00;
 		end
-		6'b001000 : begin	//lw
+		6'b100011 : begin	//lw
 			RegDst_o 	= 1'b0;
 			ALUSrc_o 	= 1'b1;
 			MemtoReg_o	= 1'b1;
@@ -57,7 +57,7 @@ always@(Op_i) begin
 			Jump_o		= 1'b0;
 			ALUOp_o		= 2'b00;
 		end
-		6'b001000 : begin	//sw
+		6'b101011 : begin	//sw
 			RegDst_o 	= 1'bx;
 			ALUSrc_o 	= 1'b1;
 			MemtoReg_o	= 1'bx;
@@ -68,7 +68,7 @@ always@(Op_i) begin
 			Jump_o		= 1'b0;
 			ALUOp_o		= 2'b00;
 		end
-		6'b001000 : begin	//beq
+		6'b000100 : begin	//beq
 			RegDst_o 	= 1'bx;
 			ALUSrc_o 	= 1'b0;
 			MemtoReg_o	= 1'bx;
@@ -79,7 +79,7 @@ always@(Op_i) begin
 			Jump_o		= 1'b0;
 			ALUOp_o		= 2'b11;
 		end
-		6'b001000 : begin	//j
+		6'b000010 : begin	//j
 			RegDst_o 	= 1'bx;
 			ALUSrc_o 	= 1'bx;
 			MemtoReg_o	= 1'bx;
