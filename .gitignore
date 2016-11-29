@@ -4,3 +4,4 @@ hw*
 output.txt
 run
 *.bak
+*.vcd
