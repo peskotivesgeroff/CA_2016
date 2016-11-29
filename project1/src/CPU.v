@@ -19,6 +19,10 @@ assign isBranch = Branch & Equal;
 assign Flush = Jump | isBranch;
 assign Jump_32 = {mux1_o[31:28], Jump_28};
 
+initial begin
+	$dumpfile("mytest.vcd");
+	$dumpvars;
+end
 wire WriteIFID;
 
 wire        mux8_RegDst;
