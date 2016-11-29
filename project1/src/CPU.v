@@ -48,6 +48,8 @@ wire [31:0] mux6_dataDft;
 wire [1:0]  mux7_select;
 wire [31:0] mux7_dataDft;
 
+wire [31:0] ALUresult;
+
 Control Control(
     .Op_i       (inst[31:26]),
     .RegDst_o   (mux8_RegDst),
@@ -140,7 +142,7 @@ ALU ALU(
     .data1_i    (mux6.data_o),
     .data2_i    (mux4.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
-    .data_o     (EX_MEM.ALUresult_i)
+    .data_o     (ALUresult)
 );
 
 
@@ -203,7 +205,7 @@ EX_MEM EX_MEM(
     .MemtoReg_i (ID_EX.MemtoReg_o),
     .RegWrite_i (ID_EX.RegWrite_o),
 
-    .ALUresult_i(ALU.data_o),
+    .ALUresult_i(ALUresult),
     .RDdata_i	(mux7_o),
     .RDaddr_i	(mux3.data_o),
 
@@ -327,7 +329,7 @@ always @(posedge clk_i) begin
   //$display("Ctrl_o: %b", Control.ALUSrc_o);
   //$display("mux8_i: %b", mux8.ALUSrc_i);
   //$display("idexo: %b", ID_EX.RDaddr_o);
-  //$display("exmemo: %b", EX_MEM.RDaddr_o);
+  $display("exmemo: %b", EX_MEM.RDaddr_o);
   //$display("mux3_i2: %b", mux3.data2_i);
   //$display("mux3_i1: %b", mux3.data1_i);
   //$display("mux3_sel: %b", mux3.select_i);
