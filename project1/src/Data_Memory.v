@@ -22,11 +22,12 @@ always@(*) begin
     //data_o = {{24'b0}, memory[addr_i>>2]};
   end else begin
     data_o = 32'b0;
-    if(MemWrite_i)
+    if(MemWrite_i) begin 
       memory[addr_i] = data_i[7:0];
-      memory[addr_i+1] = data_i[15:-8];
-      memory[addr_i+2] = data_i[23:-8];
-      memory[addr_i+3] = data_i[31:-8];
+      memory[addr_i+1] = data_i[15:8];
+      memory[addr_i+2] = data_i[23:16];
+      memory[addr_i+3] = data_i[31:24];
+	 end
   end
 end
 

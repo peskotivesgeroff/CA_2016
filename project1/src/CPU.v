@@ -224,7 +224,7 @@ EX_MEM EX_MEM(
 
 MEM_WB MEM_WB(
   .clk_i      (clk_i),
-  .MemtoReg_i (EX_MemtoReg),
+  .MemtoReg_i (MEM_MemtoReg),
   .RegWrite_i (EXMEM_RegWrite),
 
   .Memdata_i	(Data_Memory.data_o),

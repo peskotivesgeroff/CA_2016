@@ -32,6 +32,13 @@ reg					MemRead_o, MemWrite_o, MemtoReg_o, RegWrite_o;
 reg 	[4:0]		RDaddr_o;
 reg		[31:0]		ALUresult_o, RDdata_o;
 
+initial begin
+	MemRead_o = 1'b0;
+	MemWrite_o = 1'b0;
+	MemtoReg_o = 1'b0;
+	RegWrite_o = 1'b0;
+end
+
 
 always@(posedge clk_i) begin
     MemRead_o <= MemRead_i;

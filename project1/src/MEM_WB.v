@@ -28,6 +28,11 @@ reg					MemtoReg_o, RegWrite_o;
 reg  [4:0]       	RDaddr_o;
 reg  [31:0]      	Memdata_o, ALUresult_o;
 
+initial begin
+	MemtoReg_o = 1'b0;
+	RegWrite_o = 1'b0;
+end
+
 always@(posedge clk_i) begin
     MemtoReg_o <= MemtoReg_i;
     RegWrite_o <= RegWrite_i;

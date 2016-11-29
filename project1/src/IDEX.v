@@ -1,4 +1,4 @@
-module ID_EX
+module IDEX
 (
     clk_i,
 	RegDst_i,
@@ -45,15 +45,6 @@ reg					RegDst_o, ALUSrc_o, MemRead_o, MemWrite_o, MemtoReg_o, RegWrite_o;
 reg 	[1:0]		ALUOp_o;
 reg  	[4:0]		RSaddr_o, RTaddr_o, RDaddr_o;
 reg  	[31:0]      RSdata_o, RTdata_o, immediate_o;
-initial begin
-	RegDst_o = 1'b0;
-	ALUSrc_o = 1'b0;
-	MemRead_o = 1'b0;
-	MemWrite_o = 1'b0;
-	MemtoReg_o = 1'b0;
-	RegWrite_o = 1'b0;
-end
-
 
 always@(posedge clk_i) begin
 	RegDst_o <= RegDst_i;

@@ -19,8 +19,16 @@ output	[1:0]		ALUOp_o;
 reg					RegDst_o, ALUSrc_o, MemtoReg_o, RegWrite_o, MemRead_o, MemWrite_o, Branch_o, Jump_o;
 reg		[1:0]		ALUOp_o;
 
-initial Branch_o = 1'b0;
-initial Jump_o = 1'b0;
+initial begin
+	RegDst_o = 1'b0;
+	ALUSrc_o = 1'b0;
+	MemtoReg_o = 1'b0;
+	RegWrite_o = 1'b0;
+	MemRead_o  = 1'b0;
+	MemWrite_o = 1'b0;
+	Branch_o = 1'b0;
+	Jump_o = 1'b0;
+end
 
 always@(Op_i) begin
     case (Op_i)
