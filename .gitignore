@@ -2,6 +2,7 @@
 hw*
 *.zip
 output.txt
+Fibonacci_output.txt
 run
 *.bak
 *.vcd

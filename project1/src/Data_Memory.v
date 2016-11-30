@@ -19,7 +19,7 @@ assign  data_o = MemRead_i ? {memory[addr_i+3], memory[addr_i+2], memory[addr_i+
 reg     [7:0]     	memory  [0:31]; //why 8 bits?
 //reg 	[31:0]		data_o;
 
-always@(posedge clk_i) begin
+always@(negedge clk_i) begin
   if(MemWrite_i) begin 
       memory[addr_i] <= data_i[7:0];
       memory[addr_i+1] <= data_i[15:8];
