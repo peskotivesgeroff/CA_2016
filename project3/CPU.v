@@ -121,6 +121,9 @@ wire        EX_MemRead, EX_MemWrite, EX_MemtoReg, EX_RegWrite;
 wire        MEM_MemtoReg;
 wire [31:0]	MEM_Memdata;
 
+//Stall
+wire stall;
+
 Control Control(
   .Op_i       (inst[31:26]),
   .RegDst_o   (mux8_RegDst),
@@ -198,6 +201,7 @@ IF_ID IF_ID(
   .Flush_i	(Flush),
   .pc4addr_i	(pc4addr),
   .instr_i	(instr),
+  .stall_i  (stall),
   .pc4addr_o	(IFID_pc4addr_o),
   .instr_o	(inst)
 );
@@ -218,6 +222,7 @@ ID_EX ID_EX(
   .RSaddr_i	(inst[25:21]),
   .RTaddr_i	(inst[20:16]),
   .RDaddr_i	(inst[15:11]),
+  .stall_i  (stall),
 
   .RegDst_o   (mux3_select),
   .ALUSrc_o   (mux4_select),
@@ -245,6 +250,7 @@ EX_MEM EX_MEM(
   .ALUresult_i(ALUresult),
   .RDdata_i	(mux7_o),
   .RDaddr_i	(mux3_data_o),
+  .stall_i  (stall),
 
   .MemRead_o  (DM_read),
   .MemWrite_o	(DM_write),
@@ -264,6 +270,7 @@ MEM_WB MEM_WB(
   .Memdata_i	(MEM_Memdata),
   .ALUresult_i(EXMEM_ALUresult),
   .RDaddr_i	(EXMEM_RDaddr),
+  .stall_i  (stall),
 
   .MemtoReg_o (mux5_select),
   .RegWrite_o (MEMWB_RegWrite),
@@ -401,6 +408,7 @@ PC PC
 	.stall_i(),
 	.pcEnable_i(PCWrite),
 	.pc_i(PC_i),
+	.stall_i(stall),
 	.pc_o(inst_addr)
 );
 
@@ -441,7 +449,7 @@ dcache_top dcache
 	.p1_MemRead_i(DM_read), 
 	.p1_MemWrite_i(DM_write), 
 	.p1_data_o(MEM_Memdata), 
-	.p1_stall_o()
+	.p1_stall_o(stall)
 );
 
 endmodule

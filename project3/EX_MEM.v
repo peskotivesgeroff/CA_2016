@@ -9,6 +9,7 @@ module EX_MEM
     ALUresult_i,
     RDdata_i,
     RDaddr_i,
+	stall_i,
 
     MemRead_o,
     MemWrite_o,
@@ -21,7 +22,7 @@ module EX_MEM
 );
 
 // Ports
-input               clk_i, MemRead_i, MemWrite_i, MemtoReg_i, RegWrite_i;
+input               clk_i, MemRead_i, MemWrite_i, MemtoReg_i, RegWrite_i, stall_i;
 input   [4:0]       RDaddr_i;
 input   [31:0]      ALUresult_i, RDdata_i;
 output				MemRead_o, MemWrite_o, MemtoReg_o, RegWrite_o;
@@ -41,13 +42,24 @@ end
 
 
 always@(posedge clk_i) begin
-    MemRead_o <= MemRead_i;
-    MemWrite_o <= MemWrite_i;
-    MemtoReg_o <= MemtoReg_i;
-    RegWrite_o <= RegWrite_i;
-    RDaddr_o <= RDaddr_i;
-    ALUresult_o <= ALUresult_i;
-    RDdata_o <= RDdata_i;
+	if(~stall_i) begin
+   		MemRead_o <= MemRead_i;
+    	MemWrite_o <= MemWrite_i;
+    	MemtoReg_o <= MemtoReg_i;
+    	RegWrite_o <= RegWrite_i;
+    	RDaddr_o <= RDaddr_i;
+    	ALUresult_o <= ALUresult_i;
+    	RDdata_o <= RDdata_i;
+	end
+	else begin
+   		MemRead_o <= MemRead_o;
+    	MemWrite_o <= MemWrite_o;
+    	MemtoReg_o <= MemtoReg_o;
+    	RegWrite_o <= RegWrite_o;
+    	RDaddr_o <= RDaddr_o;
+    	ALUresult_o <= ALUresult_o;
+    	RDdata_o <= RDdata_o;
+	end
 end
 
 endmodule

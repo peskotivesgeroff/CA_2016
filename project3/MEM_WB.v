@@ -7,6 +7,7 @@ module MEM_WB
     Memdata_i,
     ALUresult_i,
     RDaddr_i,
+	stall_i,
 
     MemtoReg_o,
     RegWrite_o,
@@ -17,7 +18,7 @@ module MEM_WB
 );
 
 // Ports
-input               clk_i, MemtoReg_i, RegWrite_i;
+input               clk_i, MemtoReg_i, RegWrite_i, stall_i;
 input   [4:0]       RDaddr_i;
 input   [31:0]      Memdata_i, ALUresult_i;
 output				MemtoReg_o, RegWrite_o;
@@ -34,11 +35,20 @@ initial begin
 end
 
 always@(posedge clk_i) begin
-    MemtoReg_o <= MemtoReg_i;
-    RegWrite_o <= RegWrite_i;
-    RDaddr_o <= RDaddr_i;
-    Memdata_o <= Memdata_i;
-    ALUresult_o <= ALUresult_i;
+	if(~stall_i) begin
+    	MemtoReg_o <= MemtoReg_i;
+    	RegWrite_o <= RegWrite_i;
+    	RDaddr_o <= RDaddr_i;
+    	Memdata_o <= Memdata_i;
+    	ALUresult_o <= ALUresult_i;
+	end
+	else begin
+    	MemtoReg_o <= MemtoReg_o;
+    	RegWrite_o <= RegWrite_o;
+    	RDaddr_o <= RDaddr_o;
+    	Memdata_o <= Memdata_o;
+    	ALUresult_o <= ALUresult_o;
+	end
     //$display("RDaddr: %b", RDaddr_o);
 end
 
