@@ -89,6 +89,9 @@ reg		[255:0]		w_hit_data;
 wire				    write_hit;
 wire				    p1_req;
 reg		[31:0]		p1_data;
+//wire  [2:0]     word_offset;
+
+//assign  word_offset = p1_offset[4:2];
 
 // project1 interface
 assign 	p1_req     = p1_MemRead_i | p1_MemWrite_i;
@@ -122,18 +125,24 @@ assign	cache_dirty  = write_hit;
 assign  hit = (p1_tag == sram_tag) & sram_valid;
 assign  r_hit_data = hit ? sram_cache_data : 256'b0;
 	
+parameter word_size = 'd32;
+integer word_offset;
+always@(p1_offset or word_offset) begin
+  word_offset <= p1_offset[4:2] * 'd32;
+end
+
 // read data :  256-bit to 32-bit
-always@(p1_offset or r_hit_data) begin
+always@(p1_offset or r_hit_data or word_offset) begin
 	//!!! add you code here! (p1_data=...?)
-  p1_data = r_hit_data[(p1_offset[4:2] + 1) * 32 - 1 : p1_offset[4:2] * 32];
+  p1_data <= r_hit_data[word_offset +: word_size];
 end
 
 
 // write data :  32-bit to 256-bit
-always@(p1_offset or r_hit_data or p1_data_i) begin
+always@(p1_offset or r_hit_data or p1_data_i or word_offset) begin
 	//!!! add you code here! (w_hit_data=...?)
-  w_hit_data = r_hit_data;
-  w_hit_data[(p1_offset[4:2] + 1) * 32 - 1 : p1_offset[4:2] * 32] = p1_data_i;
+  w_hit_data <= r_hit_data;
+  w_hit_data[word_offset +: word_size] <= p1_data_i;
 end
 
 
@@ -170,11 +179,11 @@ always@(posedge clk_i or negedge rst_i) begin
 				end
 			end
 			STATE_READMISS: begin
-        mem_enable = 1'b0;
 				if(mem_ack_i) begin			//wait for data memory acknowledge
 	                //!!! add you code here! 
 					state <= STATE_READMISSOK;
           cache_we <= 1'b1;
+          mem_enable = 1'b0;
 				end
 				else begin
 					state <= STATE_READMISS;
@@ -195,7 +204,6 @@ always@(posedge clk_i or negedge rst_i) begin
 				end
 				else begin
 					state <= STATE_WRITEBACK;
-          mem_enable = 1'b0;
 				end
 			end
 		endcase

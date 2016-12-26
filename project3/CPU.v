@@ -17,6 +17,11 @@ input clk_i;
 input rst_i;
 input start_i;
 
+initial begin
+  $dumpfile("mytest.vcd");
+  $dumpvars;
+end
+
 //
 // to Data Memory interface		
 //

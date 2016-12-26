@@ -2,6 +2,7 @@
 hw*
 *.zip
 output.txt
+cache.txt
 Fibonacci_output.txt
 run
 *.bak

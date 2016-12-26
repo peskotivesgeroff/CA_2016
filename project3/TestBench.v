@@ -102,7 +102,8 @@ always@(posedge Clk) begin
 		end 
 	end
 	if(counter > 150) begin	// stop 
-		$stop;
+		//$stop;
+    $finish;
 	end
 		
 	$fdisplay(outfile, "cycle = %d, Start = %b", counter, Start);
