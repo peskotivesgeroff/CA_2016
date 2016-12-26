@@ -405,7 +405,6 @@ PC PC
 	.clk_i(clk_i),
 	.rst_i(rst_i),
 	.start_i(start_i),
-	.stall_i(),
 	.pcEnable_i(PCWrite),
 	.pc_i(PC_i),
 	.stall_i(stall),
